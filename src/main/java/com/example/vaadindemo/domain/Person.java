@@ -12,11 +12,17 @@ public class Person {
 	
 	private String lastName;
 	
-	public Person(String firstName, int yob, String lastName) {
+	private String pozycja;
+	
+	private int numer;
+	
+	public Person(String firstName, String lastName, int yob, String pozycja, int numer) {
 		super();
 		this.firstName = firstName;
 		this.yob = yob;
 		this.lastName = lastName;
+		this.pozycja = pozycja;
+		this.numer = numer;
 	}
 
 	public Person() {
@@ -49,7 +55,7 @@ public class Person {
 	@Override
 	public String toString() {
 		return "Person [firstName=" + firstName + ", yob=" + yob
-				+ ", lastName=" + lastName + "]";
+				+ ", lastName=" + lastName + ", pozycja=" + pozycja + "]";
 	}
 
 	public UUID getId() {
@@ -58,6 +64,22 @@ public class Person {
 
 	public void setId(UUID id) {
 		this.id = id;
+	}
+
+	public String getPozycja() {
+		return pozycja;
+	}
+
+	public void setPozycja(String pozycja) {
+		this.pozycja = pozycja;
+	}
+
+	public int getNumer() {
+		return numer;
+	}
+
+	public void setNumer(int numer) {
+		this.numer = numer;
 	}
 	
 }

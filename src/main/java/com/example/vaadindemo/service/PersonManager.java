@@ -11,7 +11,8 @@ public class PersonManager {
 	private List<Person> db = new ArrayList<Person>();
 	
 	public void addPerson(Person person){
-		Person p = new Person(person.getFirstName(), person.getYob(), person.getLastName());
+		// Dodawanie
+		Person p = new Person(person.getFirstName(), person.getLastName(), person.getYob(), person.getPozycja(), person.getNumer());
 		p.setId(UUID.randomUUID());
 		db.add(p);
 	}
@@ -21,7 +22,7 @@ public class PersonManager {
 	}
 
 	public void delete(Person person) {
-		
+		// Usuwanie
 		Person toRemove = null;
 		for (Person p: db) {
 			if (p.getId().compareTo(person.getId()) == 0){
@@ -32,9 +33,17 @@ public class PersonManager {
 		db.remove(toRemove);		
 	}
 
-	public void updatePerson(Person person) {
-		// TODO DOIT YOURSELF
+	public List<Person> updatePerson(Person person) {
+		// Edycja
+		for(Person p : db)
+		{
+			if(p.getId()==person.getId())
+			{
+				int index = db.indexOf(p);
+				db.set(index, person);
+			}
+			}
 		
+			return db;
 	}
-
 }

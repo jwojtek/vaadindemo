@@ -20,15 +20,16 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.ComboBox;
 
-@Title("Vaadin Demo App")
+@Title("Zarządzenie zawodnikami")
 public class VaadinApp extends UI {
 
 	private static final long serialVersionUID = 1L;
 
 	private PersonManager personManager = new PersonManager();
-
-	private Person person = new Person("Jasiu", 1967, "Kowalski");
+	// Dane domyślne
+	private Person person = new Person("Jan", "Kowalski", 1991, "Napastnik", 1);
 	private BeanItem<Person> personItem = new BeanItem<Person>(person);
 
 	private BeanItemContainer<Person> persons = new BeanItemContainer<Person>(
@@ -50,31 +51,53 @@ public class VaadinApp extends UI {
 			center();
 			
 			switch (action) {
+			//Nazwy zakładek
 			case ADD:
-				setCaption("Dodaj nową osobę");
+				setCaption("Dodaj nowego zawodnika");
 				break;
 			case EDIT:
-				setCaption("Edytuj osobę");
+				setCaption("Edytuj zawodnika");
 				break;
 			default:
 				break;
 			}
 			
 
+	        final ComboBox pozycja = new ComboBox("Pozycja");
+	        pozycja.setInvalidAllowed(false);
+	        pozycja.setNullSelectionAllowed(false);
+	        pozycja.addItem("Bramkarz");
+	        pozycja.addItem("Obrońca");
+	        pozycja.addItem("Pomocnik");
+	        pozycja.addItem("Napastnik");
+			
+
 			final FormLayout form = new FormLayout();
 			final FieldGroup binder = new FieldGroup(personItem);
 
-			final Button saveBtn = new Button(" Dodaj osobę ");
+			final Button saveBtn = new Button(" Zapisz ");
 			final Button cancelBtn = new Button(" Anuluj ");
 
-			form.addComponent(binder.buildAndBind("Nazwisko", "lastName"));
-			form.addComponent(binder.buildAndBind("Rok urodzenia", "yob"));
+			// Pola do wypełnienia
 			form.addComponent(binder.buildAndBind("Imię", "firstName"));
+			form.addComponent(binder.buildAndBind("Nazwisko", "lastName"));
+			form.addComponent(binder.buildAndBind("Rok", "yob"));
+			form.addComponent(pozycja);
+			// form.addComponent(binder.buildAndBind("Pozycja", "pozycja"));
+			form.addComponent(binder.buildAndBind("Numer", "numer"));
 
 			binder.setBuffered(true);
 
+			// Pola obowiązkowe oraz ich tłumaczenie
 			binder.getField("lastName").setRequired(true);
+			binder.getField("lastName").setRequiredError("Uzupełnij naziwsko");
 			binder.getField("firstName").setRequired(true);
+			binder.getField("firstName").setRequiredError("Uzupełnij imię");
+			binder.getField("yob").setRequired(true);
+			binder.getField("yob").setRequiredError("Uzupełnij datę urodzenia");
+			binder.getField("numer").setRequired(true);
+			binder.getField("numer").setRequiredError("Uzupełnij numer zawodnika");
+			
 
 			VerticalLayout fvl = new VerticalLayout();
 			fvl.setMargin(true);
@@ -97,8 +120,10 @@ public class VaadinApp extends UI {
 						binder.commit();
 
 						if (action == Action.ADD) {
+							person.setPozycja(String.valueOf(pozycja.getValue()));
 							personManager.addPerson(person);
 						} else if (action == Action.EDIT) {
+							person.setPozycja(String.valueOf(pozycja.getValue()));
 							personManager.updatePerson(person);
 						}
 
@@ -127,9 +152,10 @@ public class VaadinApp extends UI {
 	@Override
 	protected void init(VaadinRequest request) {
 
-		Button addPersonFormBtn = new Button("Add ");
-		Button deletePersonFormBtn = new Button("Delete");
-		Button editPersonFormBtn = new Button("Edit");
+		// Przyciski
+		Button addPersonFormBtn = new Button("Dodaj ");
+		Button deletePersonFormBtn = new Button("Usuń");
+		Button editPersonFormBtn = new Button("Edytuj");
 
 		VerticalLayout vl = new VerticalLayout();
 		setContent(vl);
@@ -173,10 +199,14 @@ public class VaadinApp extends UI {
 		hl.addComponent(editPersonFormBtn);
 		hl.addComponent(deletePersonFormBtn);
 
-		final Table personsTable = new Table("Persons", persons);
+		final Table personsTable = new Table("Lista zawodników", persons);
+		// Kolumny tabeli
 		personsTable.setColumnHeader("firstName", "Imię");
 		personsTable.setColumnHeader("lastName", "Nazwisko");
-		personsTable.setColumnHeader("yob", "Rok urodzenia");
+		personsTable.setColumnHeader("yob", "Rok");
+		personsTable.setColumnHeader("pozycja", "Pozycja");
+		personsTable.setColumnHeader("numer", "Numer");
+		personsTable.setVisibleColumns(new Object[] {"firstName","lastName", "yob", "pozycja", "numer" });
 		personsTable.setSelectable(true);
 		personsTable.setImmediate(true);
 
@@ -192,11 +222,15 @@ public class VaadinApp extends UI {
 					person.setFirstName("");
 					person.setLastName("");
 					person.setYob(0);
+					person.setPozycja("");
+					person.setNumer(0);
 					person.setId(null);
 				} else {
 					person.setFirstName(selectedPerson.getFirstName());
 					person.setLastName(selectedPerson.getLastName());
 					person.setYob(selectedPerson.getYob());
+					person.setPozycja(selectedPerson.getPozycja());
+					person.setNumer(selectedPerson.getNumer());
 					person.setId(selectedPerson.getId());
 				}
 			}
